@@ -9,7 +9,7 @@ pthread_mutex_t mute;
 pthread_cond_t conc, conp;
 
 void *producer(void *ptr){
-	int item;
+	int item = 1;
 	
 	while(item <= BUFFER_SIZE){
 		pthread_mutex_lock(&mute);
@@ -29,7 +29,7 @@ void *producer(void *ptr){
 }
 
 void *consumer(void *ptr){
-	int item;
+	int item = 1;
 	
 	while(item <=  BUFFER_SIZE){
 		pthread_mutex_lock(&mute);
