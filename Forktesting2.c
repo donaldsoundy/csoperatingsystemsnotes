@@ -24,7 +24,6 @@ void forking(int n)
 		}
 		if (getpid() != parent){
 			forking(n+1);
-			return 0;
 		}
 	}
 	while((parentPid = wait(&s)) > 0);
