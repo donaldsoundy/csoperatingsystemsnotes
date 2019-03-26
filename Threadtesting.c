@@ -3,7 +3,7 @@
 #include <pthread.h>
 #define NUM_PRODUCERS 2							//set the number of producers
 #define NUM_CONSUMERS 2							//set the number of consumers
-#define BUFFER_SIZE 500							//set the number of products made
+#define BUFFER_SIZE 64							//set the number of products made
 int inv = 0;									//current number of inventory
 pthread_mutex_t mute;							//mutex global variable
 pthread_cond_t conc, conp;						//conditions for producer and consumer
