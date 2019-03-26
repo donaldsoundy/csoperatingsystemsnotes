@@ -11,7 +11,7 @@ void forking(int n)
 	
 	int parent = (int) getpid();
 	
-	if (n = NUM_CHILDREN) {
+	if (n == NUM_CHILDREN) {
 		printf("Hello, PID: %d\n", (int) getpid());
 		exit(0);
 	}
