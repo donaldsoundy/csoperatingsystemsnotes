@@ -5,35 +5,35 @@
 #define NUM_CONSUMERS 2
 #define BUFFER_SIZE 12
 int inv = 0;
-pthread_mutex_t mute
+pthread_mutex_t mute;
 pthread_cond_t conc, conp;
 
 void *producer(void *ptr){
 	int item;
 	
-	while(i <= BUFFER_SIZE){
+	while(item <= BUFFER_SIZE){
 		pthread_mutex_lock(&mute);
 		while(inv != 0) pthread_cond_wait(&conp, &mute);
 		inv = item;
 		pthread_cond_signal(&conc);
 		pthread_mutex_unlock(&mute);
 		
-		i++;
+		item++;
 	}
 	pthread_exit(0);
 }
 
-void *comsumer(void *ptr){
+void *consumer(void *ptr){
 	int item;
 	
 	while(item <=  BUFFER_SIZE){
 		pthread_mutex_lock(&mute);
 		while(inv==0) pthread_cond_wait(&conc, &mute);
-		buffer = 0;
+		inv = 0;
 		pthread_cond_signal(&conp);
 		pthread_mutex_unlock(&mute);
 		
-		i++
+		item++
 	}
 	pthread_exit(0);
 }
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 	pthread_join(con, 0);
 	pthread_cond_destroy(&conc);
 	pthread_cond_destroy(&conp);
-	pthread_mutex_destroy(&the_mutex);
+	pthread_mutex_destroy(&mute);
 	
 	return 0;
 }
