@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 			printf("Hello, PID: %d\n", (int) getpid());
 			exit(0);
 		}
-		i++
+		i++;
 	}
 	while((parentPid = wait(&s)) > 0);
 	return 0;
