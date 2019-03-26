@@ -3,7 +3,7 @@
 #include <pthread.h>
 #define NUM_PRODUCERS 2
 #define NUM_CONSUMERS 2
-#define BUFFER_SIZE 12
+#define BUFFER_SIZE 80
 int inv = 0;
 pthread_mutex_t mute;
 pthread_cond_t conc, conp;
@@ -17,6 +17,10 @@ void *producer(void *ptr){
 		inv = item;
 		pthread_cond_signal(&conc);
 		pthread_mutex_unlock(&mute);
+		
+		pthread_id_np_t   tid;
+		tid = pthread_getthreadid_np();
+		printf("producer %d has created 1 item.", (int) tid);
 		
 		item++;
 	}
@@ -33,12 +37,16 @@ void *consumer(void *ptr){
 		pthread_cond_signal(&conp);
 		pthread_mutex_unlock(&mute);
 		
+		pthread_id_np_t   tid;
+		tid = pthread_getthreadid_np();
+		printf("consumer %d has created 1 item.", (int) tid);
+		
 		item++;
 	}
 	pthread_exit(0);
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
 	pthread_t pro, con;
 	pthread_mutex_init(&mute, 0);
