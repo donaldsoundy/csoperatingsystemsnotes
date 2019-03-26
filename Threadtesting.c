@@ -18,7 +18,7 @@ void *producer(void *ptr){
 			printf("producer %d has gone to sleep.\n", (int) pthread_self());
 			pthread_cond_wait(&conp, &mute);
 		}
-		inv += item;									//incrementing the inventory
+		inv += 1;									//incrementing the inventory
 		pthread_cond_signal(&conc);						//sets the condition for consumer
 		pthread_mutex_unlock(&mute);					//unlocks the mutex
 		
