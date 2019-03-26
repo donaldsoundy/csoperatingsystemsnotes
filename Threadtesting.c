@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#define NUM_PRODUCERS 2							//set the number of producers
-#define NUM_CONSUMERS 2							//set the number of consumers
-#define BUFFER_SIZE 64							//set the number of products made
+#define NUM_PRODUCERS 4							//set the number of producers
+#define NUM_CONSUMERS 4							//set the number of consumers
+#define BUFFER_SIZE 20							//set the max number of products
+#define TO_MAKE 20								//set the number of items to make
 int inv = 0;									//current number of inventory
 pthread_mutex_t mute;							//mutex global variable
 pthread_cond_t conc, conp;						//conditions for producer and consumer
@@ -11,13 +12,13 @@ pthread_cond_t conc, conp;						//conditions for producer and consumer
 void *producer(void *ptr){
 	int item = 1;
 	
-	while(item <= BUFFER_SIZE){							//creates a set number of items
+	while(item <= TO_MAKE){							//creates a set number of items
 		pthread_mutex_lock(&mute);						//sets the mutex
-		while(inv != 0) {								//puts thread to sleep if inv is full
+		while(inv == BUFFER_SIZE) {								//puts thread to sleep if inv is full
 			printf("producer %d has gone to sleep.\n", (int) pthread_self());
 			pthread_cond_wait(&conp, &mute);
 		}
-		inv = item;										//incrementing the inventory
+		inv += item;									//incrementing the inventory
 		pthread_cond_signal(&conc);						//sets the condition for consumer
 		pthread_mutex_unlock(&mute);					//unlocks the mutex
 		
@@ -31,13 +32,13 @@ void *producer(void *ptr){
 void *consumer(void *ptr){
 	int item = 1;
 	
-	while(item <=  BUFFER_SIZE){						//consumes a set number of items
+	while(item <=  TO_MAKE){						//consumes a set number of items
 		pthread_mutex_lock(&mute);						//sets the mutex
 		while(inv==0) {									//puts thread to sleep if inv is empty
 			printf("consumer %d has gone to sleep.\n", (int) pthread_self());
 			pthread_cond_wait(&conc, &mute);
 		}
-		inv = 0;										//decrementing the inventory
+		inv -= 1;										//decrementing the inventory
 		pthread_cond_signal(&conp);						//sets the conditino for the producer
 		pthread_mutex_unlock(&mute);					//unlocks the mutex
 		
