@@ -33,7 +33,7 @@ void *consumer(void *ptr){
 		pthread_cond_signal(&conp);
 		pthread_mutex_unlock(&mute);
 		
-		item++
+		item++;
 	}
 	pthread_exit(0);
 }
