@@ -6,7 +6,7 @@
 
 void forking(int n)
 {
-	pid_ parentPid, childPid;
+	pid_t parentPid, childPid;
 	int s = 0;
 	
 	int parent = (int) getpid();
