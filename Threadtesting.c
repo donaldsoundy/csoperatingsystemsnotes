@@ -18,9 +18,8 @@ void *producer(void *ptr){
 		pthread_cond_signal(&conc);
 		pthread_mutex_unlock(&mute);
 		
-		pthread_id_np_t   tid;
-		tid = pthread_getthreadid_np();
-		printf("producer %d has created 1 item.", (int) tid);
+		pid = pthread_self();
+		printf("producer %d has created 1 item.", (int) pid);
 		
 		item++;
 	}
@@ -37,9 +36,8 @@ void *consumer(void *ptr){
 		pthread_cond_signal(&conp);
 		pthread_mutex_unlock(&mute);
 		
-		pthread_id_np_t   tid;
-		tid = pthread_getthreadid_np();
-		printf("consumer %d has created 1 item.", (int) tid);
+		pid = pthread_self();
+		printf("consumer %d has created 1 item.", (int) pid);
 		
 		item++;
 	}
