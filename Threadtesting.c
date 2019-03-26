@@ -50,6 +50,7 @@ void *consumer(void *ptr){
 
 int main(int argc, char **argv)
 {
+	int i;
 	pthread_t pro[NUM_PRODUCERS], con[NUM_CONSUMERS];							//Initializing the threads
 	pthread_mutex_init(&mute, 0);				//initializing the mutex to 0
 	pthread_cond_init(&conc, 0);				//initializing condition of conc to 0
