@@ -1,25 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#define NUM_PRODUCERS 3
-#define NUM_CONSUMERS 3
-#define BUFFER_SIZE 500
-int inv = 0;
-pthread_mutex_t mute;
-pthread_cond_t conc, conp;
+#define NUM_PRODUCERS 10						//set the number of producers
+#define NUM_CONSUMERS 4							//set the number of consumers
+#define BUFFER_SIZE 500							//set the number of products made
+int inv = 0;									//current number of inventory
+pthread_mutex_t mute;							//mutex global variable
+pthread_cond_t conc, conp;						//conditions for producer and consumer
 
 void *producer(void *ptr){
 	int item = 1;
 	
-	while(item <= BUFFER_SIZE){
-		pthread_mutex_lock(&mute);
-		while(inv != 0) {
+	while(item <= BUFFER_SIZE){							//creates a set number of items
+		pthread_mutex_lock(&mute);						//sets the mutex
+		while(inv != 0) {								//puts thread to sleep if inv is full
 			pthread_cond_wait(&conp, &mute);
 			printf("producer %d has gone to sleep.\n", (int) pthread_self());
 		}
-		inv = item;
-		pthread_cond_signal(&conc);
-		pthread_mutex_unlock(&mute);
+		inv += 1;										//incrementing the inventory
+		pthread_cond_signal(&conc);						//sets the condition for consumer
+		pthread_mutex_unlock(&mute);					//unlocks the mutex
 		
 		printf("producer %d has created 1 item.\n", (int) pthread_self());
 		
@@ -31,15 +31,15 @@ void *producer(void *ptr){
 void *consumer(void *ptr){
 	int item = 1;
 	
-	while(item <=  BUFFER_SIZE){
-		pthread_mutex_lock(&mute);
-		while(inv==0) {
+	while(item <=  BUFFER_SIZE){						//consumes a set number of items
+		pthread_mutex_lock(&mute);						//sets the mutex
+		while(inv==0) {									//puts thread to sleep if inv is empty
 			pthread_cond_wait(&conc, &mute);
 			printf("consumer %d has gone to sleep.\n", (int) pthread_self());
 		}
-		inv = 0;
-		pthread_cond_signal(&conp);
-		pthread_mutex_unlock(&mute);
+		inv -= 1;										//decrementing the inventory
+		pthread_cond_signal(&conp);						//sets the conditino for the producer
+		pthread_mutex_unlock(&mute);					//unlocks the mutex
 		
 		printf("consumer %d has taken 1 item.\n", (int) pthread_self());
 		
@@ -67,5 +67,6 @@ int main(int argc, char **argv)
 	pthread_cond_destroy(&conp);				//destroying condition variable conp
 	pthread_mutex_destroy(&mute);				//destroying mutex mute
 	
+	printf("The ending inventory is: %d\n", inv);
 	return 0;
 }
