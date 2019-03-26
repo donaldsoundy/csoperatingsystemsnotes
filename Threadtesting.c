@@ -3,8 +3,8 @@
 #include <pthread.h>
 #define NUM_PRODUCERS 4							//set the number of producers
 #define NUM_CONSUMERS 4							//set the number of consumers
-#define BUFFER_SIZE 20							//set the max number of products
-#define TO_MAKE 20								//set the number of items to make
+#define BUFFER_SIZE 8							//set the max number of products
+#define TO_MAKE 64								//set the number of items to make
 int inv = 0;									//current number of inventory
 pthread_mutex_t mute;							//mutex global variable
 pthread_cond_t conc, conp;						//conditions for producer and consumer
@@ -15,7 +15,7 @@ void *producer(void *ptr){
 	while(item <= TO_MAKE){							//creates a set number of items
 		pthread_mutex_lock(&mute);						//sets the mutex
 		while(inv == BUFFER_SIZE) {								//puts thread to sleep if inv is full
-			printf("producer %d has gone to sleep.\n", (int) pthread_self());
+			printf("producer %d has found the inventory full and is waiting for consumers.\n", (int) pthread_self());
 			pthread_cond_wait(&conp, &mute);
 		}
 		inv += 1;									//incrementing the inventory
@@ -35,7 +35,7 @@ void *consumer(void *ptr){
 	while(item <=  TO_MAKE){						//consumes a set number of items
 		pthread_mutex_lock(&mute);						//sets the mutex
 		while(inv==0) {									//puts thread to sleep if inv is empty
-			printf("consumer %d has gone to sleep.\n", (int) pthread_self());
+			printf("consumer %d has found the inventory empty and is waiting for it to be filled.\n", (int) pthread_self());
 			pthread_cond_wait(&conc, &mute);
 		}
 		inv -= 1;										//decrementing the inventory
