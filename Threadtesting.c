@@ -13,13 +13,15 @@ void *producer(void *ptr){
 	
 	while(item <= BUFFER_SIZE){
 		pthread_mutex_lock(&mute);
-		while(inv != 0) pthread_cond_wait(&conp, &mute);
+		while(inv != 0) {
+			pthread_cond_wait(&conp, &mute);
+			printf("producer %d has gone to sleep.", (int) pthread_self());
+		}
 		inv = item;
 		pthread_cond_signal(&conc);
 		pthread_mutex_unlock(&mute);
 		
-		pid = pthread_self();
-		printf("producer %d has created 1 item.", (int) pid);
+		printf("producer %d has created 1 item.", (int) pthread_self());
 		
 		item++;
 	}
@@ -31,13 +33,15 @@ void *consumer(void *ptr){
 	
 	while(item <=  BUFFER_SIZE){
 		pthread_mutex_lock(&mute);
-		while(inv==0) pthread_cond_wait(&conc, &mute);
+		while(inv==0) {
+			pthread_cond_wait(&conc, &mute);
+			printf("consumer %d has gone to sleep.\n", (int) pthread_self());
+		}
 		inv = 0;
 		pthread_cond_signal(&conp);
 		pthread_mutex_unlock(&mute);
 		
-		pid = pthread_self();
-		printf("consumer %d has created 1 item.", (int) pid);
+		printf("consumer %d has taken 1 item.\n", (int) pthread_self());
 		
 		item++;
 	}
